@@ -73,7 +73,7 @@ void ParticleFilter::prediction(double delta_t, double std_pos[], double velocit
         double y=one.y;
         double theta = one.theta;
 
-        if (yaw_rate > 1e-6) {
+        if (fabs(yaw_rate) > 1e-6) {
             one.x = x + velocity/yaw_rate * (sin(theta + yaw_rate*delta_t) - sin(theta));
             one.y = y + velocity/yaw_rate * (cos(theta) - cos(theta+yaw_rate*delta_t));
             one.theta = theta + yaw_rate * delta_t;
@@ -148,9 +148,9 @@ void ParticleFilter::updateWeights(double sensor_range, double std_landmark[],
         vector<LandmarkObs> predicted;
         
         for ( auto &lm : map_landmarks.landmark_list) {
-            if (fabs(lm.x_f - one_part.x) <= sensor_range && fabs(lm.y_f - one_part.y) <= sensor_range ) {
+//            if (fabs(lm.x_f - one_part.x) <= sensor_range && fabs(lm.y_f - one_part.y) <= sensor_range ) {
                 predicted.push_back(LandmarkObs{lm.id_i, lm.x_f, lm.y_f});
-            }
+//            }
         }
     
         // transform observation to map coordinate
@@ -159,12 +159,12 @@ void ParticleFilter::updateWeights(double sensor_range, double std_landmark[],
         
         // collect the observation within sensor range
         for (auto &obs1: observations){
-            if (fabs(obs1.x) <= sensor_range && fabs(obs1.y) <= sensor_range) {
+//            if (fabs(obs1.x) <= sensor_range && fabs(obs1.y) <= sensor_range) {
                 
                 double x = one_part.x + obs1.x * cos(one_part.theta) - obs1.y * sin(one_part.theta);
                 double y = one_part.y + obs1.x * sin(one_part.theta) + obs1.y * cos(one_part.theta);
                 obs_transformed.push_back(LandmarkObs{0, x, y});
-            }
+//            }
         }
         
         // associate observation with landmark
